@@ -1,20 +1,20 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import OpenAI from 'openai';
 import { Repository } from 'typeorm';
 
 import { ProductEntity } from './product.entity';
 
 @Injectable()
 export class ProductService {
-  private openai: OpenAI;
+  private client: Anthropic;
 
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
   ) {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+    this.client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
     });
   }
 
@@ -25,20 +25,12 @@ export class ProductService {
       return 'No products available';
     }
 
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a helpful assistant.',
-        },
-        {
-          role: 'user',
-          content: question,
-        },
-      ],
+    const response = await this.client.messages.create({
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: question }],
+      model: 'claude-3-opus-20240229',
     });
 
-    return response.choices[0].message.content?.trim() ?? 'No answer available';
+    return response.content.toString();
   }
 }
