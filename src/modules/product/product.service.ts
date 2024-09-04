@@ -18,13 +18,11 @@ export class ProductService {
     });
   }
 
-  async getAnswer(productId: string, question: string): Promise<string> {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
+  async getAnswer(question: string): Promise<string> {
+    const products = await this.productRepository.find();
 
-    if (!product) {
-      throw new Error('Product not found');
+    if (products.length === 0) {
+      return 'No products available';
     }
 
     const response = await this.openai.chat.completions.create({
@@ -36,7 +34,7 @@ export class ProductService {
         },
         {
           role: 'user',
-          content: `Product: ${product.name}\nDescription: ${product.description}\nQuestion: ${question}`,
+          content: question,
         },
       ],
     });
