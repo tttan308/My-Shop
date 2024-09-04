@@ -13,7 +13,7 @@ import { PostTranslationEntity } from '../post-translation.entity';
 
 export class CreatePostCommand implements ICommand {
   constructor(
-    public readonly userId: Uuid,
+    public readonly userId: string,
     public readonly createPostDto: CreatePostDto,
   ) {}
 }
