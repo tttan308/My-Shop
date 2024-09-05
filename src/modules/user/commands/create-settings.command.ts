@@ -11,7 +11,7 @@ import { UserSettingsEntity } from '../user-settings.entity';
 
 export class CreateSettingsCommand implements ICommand {
   constructor(
-    public readonly userId: Uuid,
+    public readonly userId: string,
     public readonly createSettingsDto: CreateSettingsDto,
   ) {}
 }

@@ -22,7 +22,10 @@ export class PostService {
   ) {}
 
   @Transactional()
-  createPost(userId: Uuid, createPostDto: CreatePostDto): Promise<PostEntity> {
+  createPost(
+    userId: string,
+    createPostDto: CreatePostDto,
+  ): Promise<PostEntity> {
     return this.commandBus.execute<CreatePostCommand, PostEntity>(
       new CreatePostCommand(userId, createPostDto),
     );
